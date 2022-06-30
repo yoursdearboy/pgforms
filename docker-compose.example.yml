@@ -1,0 +1,24 @@
+version: '3.1'
+services:
+  db:
+    image: postgres:14
+    restart: always
+    volumes:
+      - db:/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: replace_with_user
+      POSTGRES_PASSWORD: replace_with_pass
+  postgrest:
+    ports:
+      - 3000:3000
+    environment:
+      PGRST_DB_URI: postgres://replace_with_user:replace_with_pass@db:5432/dbname
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: app_user
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
+    depends_on:
+      - db
+volumes:
+  db:
